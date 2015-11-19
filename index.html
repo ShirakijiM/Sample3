@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>情報理論</title>
+	<link rel="stylesheet" href="Mystyle.css" type="text/css">
+
+	<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]] } });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+</script>
+<meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+
+	<!-- href=Hyper Text Reference -->
+</head>
+<body>
+<!-- コンテナ -->
+<div id="container">
+	<!-- ヘッダー -->
+	<header>
+		<h1>情報理論</h1>
+		機械情報システム学科
+	</header>
+
+<section>
+<h2> 本講義の目的 </h2>
+<ul>
+<li> 雑音のある通信路を使って情報を誤りなく伝える方法を見つける（符号理論）<font color=red>←今回の授業</font>
+<li> その際の通信速度の限界を求める(Shannonの通信路符号化定理)
+<p>参考資料は<a href="references"> ここ</a>をクリックしてください。</p>
+				</section>
+				<section>
+				   <h2>行列とは</h2>
+	　　
+$$
+\begin{pmatrix}
+3 & 4 & 5 \\\
+1 & 3 & 7 \\\
+4 & 2 & 19
+\end{pmatrix}
+$$
+				</section>
+				<section>
+					<h2>$2 \times 2 $ 行列の足し算 </h2>
+					<p style="line-height:2em"> <br> </p>
+					$$
+					\begin{pmatrix}
+					a & b  \\\
+					c & d
+					\end{pmatrix}
+					+
+					\begin{pmatrix}
+					x & y  \\\
+					z & w
+					\end{pmatrix}
+					=
+					\begin{pmatrix}
+					a+x & b+y  \\\
+					c+z & d+w
+					\end{pmatrix}
+					$$
+				</section>
+				<section>
+					<h2>$2 \times 2 $ 行列の掛け算</h2>
+					<p style="line-height:2em">  <br> </p>
+					$$
+					\begin{pmatrix}
+					a & b  \\\
+					c & d
+					\end{pmatrix}
+					\begin{pmatrix}
+					x & y  \\\
+					z & w
+					\end{pmatrix}
+					=
+					\begin{pmatrix}
+					ax+bz & ay+bw  \\\
+					cx+dz & cy+dw
+					\end{pmatrix}
+					$$
+					<p style="line-height:1em"> <br> </p>
+					$$
+					\begin{pmatrix}
+					a & b  \\\
+					c & d
+					\end{pmatrix}
+					\begin{pmatrix}
+					x   \\\
+					y
+					\end{pmatrix}
+					=
+					\begin{pmatrix}
+					ax+by   \\\
+					cx+dy
+					\end{pmatrix}
+					$$
+				</section>
+				<section>
+					<h2>$2 \times 2 $ 行列の転置</h2>
+					<p style="line-height:2em"> <br> </p>
+					$$
+					\begin{pmatrix}
+					a & b  \\\
+					c & d
+					\end{pmatrix}^T=
+					\begin{pmatrix}
+					a & c  \\\
+					b & d
+					\end{pmatrix}
+					$$
+				</section>
+				<section>
+					<h2>応用問題</h2>
+					<p style="line-height:0.5em"> <br> </p>
+					$$
+					\begin{pmatrix}
+					1&0&1
+					\end{pmatrix}
+					\begin{pmatrix}
+					2&1\\
+					1&0\\
+					1&2
+					\end{pmatrix}
+					=
+					$$
+										<p style="line-height:0.5em"> <br> </p>
+					$$
+					\begin{pmatrix}
+					1&-1
+					\end{pmatrix}
+					\begin{pmatrix}
+					1&2&1\\
+					3&1&1
+					\end{pmatrix}
+					=
+					$$
+				</section>
+</section>
+			<section>
+				<section>
+					<h2>二元体	$\mathbb{F}_2$</h2>
+
+					<p>$\mathbb{F}_2=\{0,1\}$</p>
+					<p>$\mathbb{F}_2$の演算は、整数として計算した後、</p>
+					<p>計算結果が偶数なら$0$奇数なら
+					$1$と置き換えればよい。</p>
+					<p>特に、任意の$x \in \mathbb{F}_2$に対し$x+x=0$が成立する。</p>
+
+				</section>
+				<section>
+					<h2>二元体上の行列の演算</h2>
+							<p style="line-height:1em"> <br> </p>
+					$$
+					\begin{pmatrix}
+					0&1&1\\
+					\end{pmatrix}
+					\begin{pmatrix}
+					1&1&0\\
+					1&0&0\\
+					1&1&1
+					\end{pmatrix}
+					=
+					$$
+				</section>
+			</section>
+
+
+				<section>
+					<h2>通信のベクトル表記</h2>
+						<p style="line-height:0.5em"><br></p>
+
+					<p>$\mathbb{F}_2^n$:&nbsp;&nbsp;$\mathbb{F}_2$上の$n$次元ベクトル空間</p>
+					<p>$v_1v_2...v_n$:&nbsp;&nbsp;$n$ビットのデータ</p>
+					<p>$v=(v_1,v_2,...,v_n)\in\mathbb{F}_2^n$：データのベクトル表記</p>
+					<p>$e=(e_1,e_2,...,e_n)$:&nbsp;&nbsp;通信エラーのベクトル表記</p>
+					<p style="line-height:0.5em"><br></p>
+					<p>        データ$v$を送信しエラー$e$が発生した場合、受信されるデータは
+					$r=v+e$で表される。このとき、$v=r+e$、$e=v+r$という関係も成立している($\mathbb{F}_2$上のベクトル空間の特殊性！)。</p>
+
+				</section>
+
+				<section>
+					<h2>符号化</h2>
+　　　　　　
+					<p>写像
+
+					$$\varphi :\mathbb{F}_2^k\ni u=(u_1,..,u_k)\to v=(v_1,...,v_n)\in \mathbb{F}_2^n$$
+
+					を<font color=red><b> 符号化</b></font>と呼ぶ。ただし、$k\leq n$とする。
+					符号化によって得られる$\mathbb{F}_2^n$の部分集合
+
+					$$C=\{ \varphi(u);u\in \mathbb{F}_2^k \}$$
+
+					を <font color=red><b> 符号</b></font>と呼び、$C$の要素を<font color=red><b> 符号語</b></font>と呼ぶ。
+				</p>
+			  </section>
+
+
+<section>
+				<section>
+				   <h2> 単一パリティ検査符号</h2>
+					 	<Div Align="left">
+			\(
+			   u=(u_1,...,u_k)\to v=(u_1,...,u_k,\sum_{i=1}^ku_i)
+			\)
+						<p style="line-height:1em"> <br> </p>
+			\( C=\{v=uG;u\in \mathbb{F}_2^k \}\)
+			&nbsp; <font color=red><b> :  単一パリティ検査符号 </b></font><br>
+						<p style="line-height:1em"> <br> </p>
+			\(
+			  G=
+			  \begin{pmatrix}
+			    1&&&1\\
+			    &\ddots&&\vdots\\
+			    &&1&1
+			  \end{pmatrix}
+			\) &nbsp; <font color=red><b> :  生成行列 </b></font>
+			<p style="line-height:1em"> <br> </p>
+		  </Div>
+		  </section>
+
+			<section>
+				<h2>受信側の処理</h2>
+				<ul>
+				<li> 送信されたパリティ検査符号$v$に対し、受信語$r=v+e=(r_1,...,r_n)$を得る</li>
+				<li>
+				$r_1+\cdots+r_n=1$ならば<font color=red>誤りが発生した</font>と判定し、
+				$r_1+\cdots+r_n=0$ならば<font color=green>誤りが発生していない</font>と判定する。</li>
+				<li>
+				<font color=red>誤りが発生した</font>と判定された場合、送信者にデータの再送を要求する。</li>
+				<li>
+				<font color=green>誤りが発生していない</font>と判定された場合、受信者はデータ$r$の最初の$k=n-1$ビット
+				$(r_1,...,r_k)$
+				を受信ベクトルとして取り出す。</li>
+				</ul>
+		</section>
+
+		<section>
+		<h2>検査行列</h2>
+		<p style="line-height:1em"> <br> </p>
+		<Div Align="left">
+			パリティ検査符号$C$は、<font color=red><b>検査行列</b></font>&nbsp;$H$を使って以下のように表すことができる。
+				<p style="line-height:1em">  </p>
+			\[
+			C=\{v\in \mathbb{F}_2^n; vH^T=0 \}
+			\]
+			<p style="line-height:2em">  </p>
+		</Div>
+		</section>
+
+</section>
+
+
+				<section>
+					<section>
+					<h2>ハミング符号 </h2>
+						<ul>
+							<li> <font color=red>単一パリティ検査符号</font>: &nbsp; 符号語に生じた１個の誤りを検出することができる
+							<li> <font color=green> ハミング符号</font>:&nbsp; 符号語に生じた１個の誤りを訂正することができる
+						</ul>
+							<p style="line-height:1em"> </p>
+            <p>
+						<font color=green> ハミング符号</font>の検査行列$H$は、零ベクトル以外のすべての$\mathbb{F}_2^m$の
+						列ベクトルを並べて得られる</p>
+
+							<p style="line-height:1em"> </p>
+							<p>	$m=3$の場合の例:</p>
+						\begin{equation}
+						H=
+						\begin{pmatrix}
+						1&0&1&0&1&0&1\\
+						0&1&1&0&0&1&1\\
+						0&0&0&1&1&1&1
+						\end{pmatrix}
+						\end{equation}
+
+
+					</section>
+					<section>
+<p>
+            <font color=green> ハミング符号</font>の生成行列$G$は、検査行列$H$より求めることが出来る</p>
+						<p>(求め方については<a href="references"> 資料</a>を参考にしてください。)</p>
+
+						<p style="line-height:1em"> </p>
+						<p>$m=3$の場合の生成行列:</p>
+						\begin{equation}
+						G=
+						\begin{pmatrix}
+						1&0&0&0&0&1&1\\
+						0&1&0&0&1&0&1\\
+						0&0&1&0&1&1&0\\
+						0&0&0&1&1&1&1
+						\end{pmatrix}
+						\end{equation}
+
+
+
+					</section>
+					<section>
+						<h2>記号の準備</h2>
+
+							\begin{equation}
+							{H}^T=
+							\begin{pmatrix}
+							1&0&0\\
+							0&1&0\\
+							1&1&0\\
+							0&0&1\\
+							1&0&1\\
+							0&1&1\\
+							1&1&1
+							\end{pmatrix}
+							=
+							\begin{pmatrix}
+							h'_1\\
+							h'_2\\
+							h'_3\\
+							h'_4\\
+							h'_5\\
+							h'_6\\
+							h'_7
+							\end{pmatrix}
+							\end{equation}
+							<p style="line-height:1em"> </p>
+						  <p>$e_i$:&nbsp; 第$i$成分のみが$1$でそれ以外の成分はすべて0の$7$次元ベクトル</p>
+
+					</section>
+					<section>
+						<h2> 受信側の処理　</h2>
+
+						<ol>
+					  <li> 受信データ$r$のシンドローム$s=rH^T$を計算する</li>
+						<li> シンドローム$s$が$s\neq 0$の場合は、$s=h'_j$となる$j$の値を
+							　　$j=1,2,..,7$の中から見つけ、その値を$j=j_0$とする</li>
+						<li> $r'=r+e_{j_0}$と受信語の誤りを訂正した後、$r'$の最初の$4$ビットを
+							  情報ビットとして受け取る</li>
+						</ol>
+						<p>
+
+					このような誤り訂正を行うことにより、$1$個の誤りが生じた場合でも正しい情報を受け取ることが可能になる。
+					実際、符号語$v=uG$を送信し誤り$e_j$が発生した場合、
+					受信語は
+					$r=v+e_j$となるが、この場合のシンドローム$s$は
+					$s=rH^T=vH^T+e_jH^T=e_jH^T=h'_j$
+					となり、
+					$r'=r+e_j=v+e_j+e_j=v$
+					と誤り訂正することにより符号語$v$が正しく復元されている。
+				</p>
+
+			   </section>
+				</section>
+
+				<section>
+					<h2> </h2>
+					<Div Align="left">
+
+					</Div>
+				</section>
+
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'convex', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true },
+					// MathJax
+          { src: 'plugin/math/math_local.js', async: true }
+				]
+
+			});
+
+		</script>
+</html>
